@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import './user.css';
 import logoImage from '../image/logo.png';
+import { API_URL } from '../config/api';
 
 const UserMenu = () => {
   const location = useLocation();
@@ -39,7 +40,7 @@ const UserMenu = () => {
     }
 
     // Fetch menu for the canteen
-    fetch(`http://localhost:5000/api/menus?canteen_id=${finalCanteenId}`)
+    fetch(`${API_URL}/api/menus?canteen_id=${finalCanteenId}`)
       .then(res => res.json())
       .then(data => setMenuItems(Array.isArray(data) ? data : []))
       .catch(() => setError('Failed to load menu'))
@@ -47,12 +48,12 @@ const UserMenu = () => {
 
     // If names are not available from state (e.g. from QR link), fetch them
     if (!canteenName) {
-      fetch(`http://localhost:5000/api/canteens`)
+      fetch(`${API_URL}/api/canteens`)
         .then(res => res.json())
         .then(allCanteens => {
           const currentCanteen = allCanteens.find(c => String(c.id) === String(finalCanteenId));
           if (currentCanteen) {
-            fetch('http://localhost:5000/api/branches')
+            fetch(`${API_URL}/api/branches`)
               .then(res => res.json())
               .then(allBranches => {
                 const currentBranch = allBranches.find(b => String(b.id) === String(currentCanteen.branch_id));

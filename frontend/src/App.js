@@ -15,6 +15,7 @@ import Adminmag from './components/Adminmag';
 import OrderDetailsPage from './pages/orderdetails';
 import QRPage from './pages/qr';
 import OrderDetails from './user/OrderDetails';
+import { API_URL } from './config/api';
 
 function App() {
   const [orders, setOrders] = useState([]);
@@ -42,7 +43,7 @@ function App() {
 
   useEffect(() => {
     // Only fetch orders if user is logged in (or for public view if needed, but here we filter for admin)
-    let url = 'http://localhost:5000/api/canteen_orders';
+    let url = `${API_URL}/api/canteen_orders`;
     if (user) {
       if (user.role === 'branch_admin') url += `?branch_id=${user.branch_id}`;
       if (user.role === 'canteen_admin') url += `?canteen_id=${user.canteen_id}`;

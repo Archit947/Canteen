@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import OrderTable from './order'; 
 import AdminLayout, { useSidebar } from './AdminLayout';
 import './dashboard.css';
+import { API_URL } from '../config/api';
 
 
 const DashboardContent = ({ orders = [], stats, user, onOrderUpdate }) => {
@@ -23,7 +24,7 @@ const DashboardContent = ({ orders = [], stats, user, onOrderUpdate }) => {
   }, [user]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/branches')
+    fetch(`${API_URL}/api/branches`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -38,7 +39,7 @@ const DashboardContent = ({ orders = [], stats, user, onOrderUpdate }) => {
         setBranches([]); // Ensure branches is an array even on fetch error
       });
 
-    fetch('http://localhost:5000/api/canteens')
+    fetch(`${API_URL}/api/canteens`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {

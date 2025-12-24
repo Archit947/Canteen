@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QRCode from 'react-qr-code';
 import './order.css';
+import { API_URL } from '../config/api';
 
 const statusClass = (status) =>
   status ? status.toLowerCase().replace(' ', '-') : '';
@@ -123,7 +124,7 @@ const OrderTable = ({ orders: initialOrders = [], onOrderUpdate }) => {
     // The order ID may contain special characters like '#' which must be encoded.
     const encodedOrderId = encodeURIComponent(orderId);
 
-    const url = `http://localhost:5000/api/canteen_orders/${encodedOrderId}`;
+    const url = `${API_URL}/api/canteen_orders/${encodedOrderId}`;
     console.log("Sending PUT request to:", url);
 
     fetch(url, {

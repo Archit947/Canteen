@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import bgImage from '../image/photo-1543353071-10c8ba85a904.jpg';
 import './user.css';
+import { API_URL } from '../config/api';
 
 const UserOrder = () => {
   const navigate = useNavigate();
@@ -11,8 +12,8 @@ const UserOrder = () => {
   const [selectedCanteenId, setSelectedCanteenId] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/branches').then(res => res.json()).then(data => setAllBranches(Array.isArray(data) ? data : []));
-    fetch('http://localhost:5000/api/canteens').then(res => res.json()).then(data => setAllCanteens(Array.isArray(data) ? data : []));
+    fetch(`${API_URL}/api/branches`).then(res => res.json()).then(data => setAllBranches(Array.isArray(data) ? data : []));
+    fetch(`${API_URL}/api/canteens`).then(res => res.json()).then(data => setAllCanteens(Array.isArray(data) ? data : []));
   }, []);
 
   const availableCanteens = selectedBranchId ? allCanteens.filter(c => c.branch_id === Number(selectedBranchId)) : [];

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './dashboard.css';
+import { API_URL } from '../config/api';
 
 const Menus = ({ user }) => {
   const [menuItems, setMenuItems] = useState([]);
@@ -20,7 +21,7 @@ const Menus = ({ user }) => {
   // Fetch canteens for the dropdown selector
   useEffect(() => {
     if (user?.role === 'main_admin' || (user?.role === 'branch_admin' && user.branch_id)) {
-      let canteensUrl = 'http://localhost:5000/api/canteens';
+      let canteensUrl = `${API_URL}/api/canteens`;
       if (user.role === 'branch_admin') {
         canteensUrl += `?branch_id=${user.branch_id}`;
       }
@@ -34,7 +35,7 @@ const Menus = ({ user }) => {
   // Fetch branches for main_admin filter
   useEffect(() => {
     if (user?.role === 'main_admin') {
-      fetch('http://localhost:5000/api/branches')
+      fetch(`${API_URL}/api/branches`)
         .then(res => res.json())
         .then(data => setBranches(Array.isArray(data) ? data : []))
         .catch(err => console.error('Error fetching branches:', err));
@@ -42,7 +43,7 @@ const Menus = ({ user }) => {
   }, [user]);
 
   useEffect(() => {
-    let url = 'http://localhost:5000/api/menus';
+    let url = `${API_URL}/api/menus`;
     // Canteen admin sees only their menu
     if (user?.role === 'canteen_admin' && user.canteen_id) {
       url += `?canteen_id=${user.canteen_id}`;
@@ -117,7 +118,7 @@ const Menus = ({ user }) => {
     }
     
     if (editingId) {
-      fetch(`http://localhost:5000/api/menus/${editingId}`, {
+      fetch(`${API_URL}/api/menus/${editingId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -145,7 +146,7 @@ const Menus = ({ user }) => {
         setError(`Failed to update menu item: ${err.message}`);
       });
     } else {
-      fetch('http://localhost:5000/api/menus', {
+      fetch(`${API_URL}/api/menus`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -177,7 +178,7 @@ const Menus = ({ user }) => {
 
   const handleDelete = (id) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
-      fetch(`http://localhost:5000/api/menus/${id}`, {
+      fetch(`${API_URL}/api/menus/${id}`, {
         method: 'DELETE',
       })
         .then(res => {
