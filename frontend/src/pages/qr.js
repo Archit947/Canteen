@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import QRCode from 'react-qr-code';
 import '../components/dashboard.css';
+import { API_URL } from '../config/api';
 
 const QRPage = ({ user }) => {
   const [branches, setBranches] = useState([]);
@@ -15,8 +16,8 @@ const QRPage = ({ user }) => {
     const fetchData = async () => {
       try {
         const [branchesRes, canteensRes] = await Promise.all([
-          fetch('http://localhost:5000/api/branches'),
-          fetch('http://localhost:5000/api/canteens')
+          fetch(`${API_URL}/api/branches`),
+          fetch(`${API_URL}/api/canteens`)
         ]);
         const branchesData = await branchesRes.json();
         const canteensData = await canteensRes.json();

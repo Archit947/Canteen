@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../components/AdminLayout";
 import "../components/canteen.css";
+import { API_URL } from '../config/api';
 
 function CanteenQR({ canteenId }) {
   const [qr, setQr] = useState('');
   const [menuUrl, setMenuUrl] = useState('');
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/qr/canteen/${canteenId}`)
+    fetch(`${API_URL}/api/qr/canteen/${canteenId}`)
       .then(res => res.json())
       .then(data => {
         setQr(data.qr);
@@ -54,11 +55,11 @@ const CanteenPage = ({ user }) => {
   }, [user]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/branches")
+    fetch(`${API_URL}/api/branches`)
       .then(res => res.json())
       .then(setBranches);
 
-    fetch("http://localhost:5000/api/canteens")
+    fetch(`${API_URL}/api/canteens`)
       .then(res => res.json())
       .then(setCanteens);
   }, []);
@@ -67,7 +68,7 @@ const CanteenPage = ({ user }) => {
     e.preventDefault();
     if (!selectedBranch || !canteenName) return;
 
-    fetch("http://localhost:5000/api/canteens", {
+    fetch(`${API_URL}/api/canteens`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -86,7 +87,7 @@ const CanteenPage = ({ user }) => {
   const deleteCanteen = (canteenId) => {
     if (!window.confirm("Are you sure you want to delete this canteen?")) return;
 
-    fetch(`http://localhost:5000/api/canteens/${canteenId}`, {
+    fetch(`${API_URL}/api/canteens/${canteenId}`, {
       method: "DELETE"
     })
       .then(res => {

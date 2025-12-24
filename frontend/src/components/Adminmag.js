@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import AdminLayout from './AdminLayout';
 import './branch.css'; // Reusing branch list styles
 import './adminmag.css';
+import { API_URL } from '../config/api';
 
 const Adminmag = ({ user, onLogout }) => {
   const [admins, setAdmins] = useState([]);
@@ -22,9 +23,9 @@ const Adminmag = ({ user, onLogout }) => {
   );
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/admins').then(res => res.json()).then(data => setAdmins(Array.isArray(data) ? data : [])).catch(err => console.error('Error fetching admins:', err));
-    fetch('http://localhost:5000/api/branches').then(res => res.json()).then(data => setBranches(Array.isArray(data) ? data : [])).catch(err => console.error('Error fetching branches:', err));
-    fetch('http://localhost:5000/api/canteens').then(res => res.json()).then(data => setCanteens(Array.isArray(data) ? data : [])).catch(err => console.error('Error fetching canteens:', err));
+    fetch(`${API_URL}/api/admins`).then(res => res.json()).then(data => setAdmins(Array.isArray(data) ? data : [])).catch(err => console.error('Error fetching admins:', err));
+    fetch(`${API_URL}/api/branches`).then(res => res.json()).then(data => setBranches(Array.isArray(data) ? data : [])).catch(err => console.error('Error fetching branches:', err));
+    fetch(`${API_URL}/api/canteens`).then(res => res.json()).then(data => setCanteens(Array.isArray(data) ? data : [])).catch(err => console.error('Error fetching canteens:', err));
   }, []);
 
   useEffect(() => {
@@ -48,7 +49,7 @@ const Adminmag = ({ user, onLogout }) => {
     
     const payload = { role, branch_id: role === 'branch_admin' ? branchId : null, canteen_id: role === 'canteen_admin' ? canteenId : null };
     
-    fetch(`http://localhost:5000/api/admins/${selectedId}`, {
+    fetch(`${API_URL}/api/admins/${selectedId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -69,7 +70,7 @@ const Adminmag = ({ user, onLogout }) => {
     if (Number(adminId) === user?.id) return setError('You cannot delete your own account');
     
     if (window.confirm('Are you sure you want to delete this admin?')) {
-      fetch(`http://localhost:5000/api/admins/${adminId}`, { method: 'DELETE' })
+      fetch(`${API_URL}/api/admins/${adminId}`, { method: 'DELETE' })
         .then(res => {
           if (!res.ok) throw new Error('Failed to delete admin');
           return res.json();
@@ -94,7 +95,7 @@ const Adminmag = ({ user, onLogout }) => {
         {!canManage && <div className="card"><p className="muted">Only main administrators can manage roles.</p></div>}
 
         {canManage && (
-          <div className="branch-grid">
+          <>
             <div className="card">
               <div className="card-header">
                 <h3>Assign Role</h3>
@@ -164,7 +165,7 @@ const Adminmag = ({ user, onLogout }) => {
                 {admins.length === 0 && <div className="branch-list-item muted">No admins found.</div>}
               </div>
             </div>
-          </div>
+          </>
         )}
     </AdminLayout>
   );

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import OrderTable from '../components/order';
 import AdminLayout from '../components/AdminLayout';
 import '../components/dashboard.css';
+import { API_URL } from '../config/api';
 
 const OrderPage = ({ user }) => {
   const [orders, setOrders] = useState([]);
@@ -12,12 +13,12 @@ const OrderPage = ({ user }) => {
   const [selectedDate, setSelectedDate] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/branches')
+    fetch(`${API_URL}/api/branches`)
       .then(res => res.json())
       .then(data => setBranches(Array.isArray(data) ? data : []))
       .catch(err => console.error(err));
 
-    fetch('http://localhost:5000/api/canteens')
+    fetch(`${API_URL}/api/canteens`)
       .then(res => res.json())
       .then(data => setCanteens(Array.isArray(data) ? data : []))
       .catch(err => console.error(err));
@@ -31,7 +32,7 @@ const OrderPage = ({ user }) => {
   }, [user]);
 
   useEffect(() => {
-    let url = 'http://localhost:5000/api/canteen_orders';
+    let url = `${API_URL}/api/canteen_orders`;
     if (user) {
       if (user.role === 'branch_admin') url += `?branch_id=${user.branch_id}`;
       if (user.role === 'canteen_admin') url += `?canteen_id=${user.canteen_id}`;

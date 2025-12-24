@@ -1,6 +1,7 @@
 import AdminLayout from '../components/AdminLayout';
 import { useState, useEffect } from 'react';
 import '../components/branch.css';
+import { API_URL } from '../config/api';
 
 const BranchAdmin = ({ user }) => {
   const [branches, setBranches] = useState([]);
@@ -8,7 +9,7 @@ const BranchAdmin = ({ user }) => {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/branches')
+    fetch(`${API_URL}/api/branches`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -26,7 +27,7 @@ const BranchAdmin = ({ user }) => {
   const handleAddBranch = (e) => {
     e.preventDefault();
     if (branchInput.trim() !== '') {
-      fetch('http://localhost:5000/api/branches', {
+      fetch(`${API_URL}/api/branches`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: branchInput.trim() })
@@ -49,7 +50,7 @@ const BranchAdmin = ({ user }) => {
   const handleDeleteBranch = (id) => {
     if (!window.confirm("Are you sure you want to delete this branch?")) return;
 
-    fetch(`http://localhost:5000/api/branches/${id}`, {
+    fetch(`${API_URL}/api/branches/${id}`, {
       method: 'DELETE'
     })
     .then(res => {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './login.css'; // Reusing login styles
+import { API_URL } from '../config/api';
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -18,8 +19,8 @@ const Signup = () => {
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/branches').then(res => res.json()).then(data => setBranches(Array.isArray(data) ? data : [])).catch(err => console.error(err));
-    fetch('http://localhost:5000/api/canteens').then(res => res.json()).then(data => setCanteens(Array.isArray(data) ? data : [])).catch(err => console.error(err));
+    fetch(`${API_URL}/api/branches`).then(res => res.json()).then(data => setBranches(Array.isArray(data) ? data : [])).catch(err => console.error(err));
+    fetch(`${API_URL}/api/canteens`).then(res => res.json()).then(data => setCanteens(Array.isArray(data) ? data : [])).catch(err => console.error(err));
   }, []);
 
   const handleChange = (e) => {
@@ -44,7 +45,7 @@ const Signup = () => {
     setError('');
     setSuccess('');
 
-    fetch('http://localhost:5000/api/admins', {
+    fetch(`${API_URL}/api/admins`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
