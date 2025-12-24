@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import QRCode from 'react-qr-code';
+import { API_URL } from '../config/api';
 import './user.css';
 
 const UserCheckout = ({ onPlaceOrder }) => {
@@ -34,9 +35,6 @@ const UserCheckout = ({ onPlaceOrder }) => {
     const qrPayload = `${baseUrl}/orderdetails?id=${encodeURIComponent(orderId)}`;
     const newOrder = { order_id: orderId, item_names: cart.map(i => i.name).join(', '), branch_name: branchName, canteen_name: canteenName, employee_name: userDetails.name, total_amount: '₹' + totalAmount, status: 'Pending', qr_code: qrPayload };
 
-    // Use API_URL from config for mobile compatibility
-    const API_URL = process.env.REACT_APP_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:5000' : `http://${window.location.hostname}:5000`);
-    
     fetch(`${API_URL}/api/canteen_orders`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

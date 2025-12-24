@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { API_URL } from '../config/api';
 import './login.css';
 
 const Login = ({ onLogin }) => {
@@ -7,9 +8,6 @@ const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
-  // Use environment variable for production, fallback to localhost for development
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
   const handleSubmit = (e) => {
     e.preventDefault();
