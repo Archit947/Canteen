@@ -1,0 +1,210 @@
+/* PAGE HEADER */
+.canteen-header {
+  margin-bottom: 24px;
+}
+
+.canteen-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.canteen-header p {
+  color: #6b7280;
+  font-size: 15px;
+}
+
+/* GRID LAYOUT */
+.canteen-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+/* CARD */
+.canteen-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.canteen-card:first-child {
+  padding: 12px;
+  max-height : 130px;
+}
+
+.canteen-card h3 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* FORM */
+.canteen-form {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.canteen-form select,
+.canteen-form input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-size: 13px;
+  font-family: inherit;
+  background-color: #ffffff;
+  color: #1f2937;
+  transition: border-color 0.2s;
+  flex: 1;
+  min-width: 120px;
+}
+
+.canteen-form select:hover,
+.canteen-form input:hover {
+  border-color: #d1d5db;
+}
+
+.canteen-form select:focus,
+.canteen-form input:focus {
+  outline: none;
+  border-color: #ff8c42;
+  box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.1);
+}
+
+.canteen-form button {
+  padding: 10px 20px;
+  background: #ff8c42;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.canteen-form button:hover {
+  background: #e67e2f;
+}
+
+/* TABLE */
+.canteen-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.canteen-table th {
+  text-align: left;
+  padding: 12px 0;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.canteen-table td {
+  padding: 12px 0;
+  color: #1f2937;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.canteen-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.canteen-table .delete-btn {
+  background: #dc3545 !important;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.canteen-table .delete-btn:hover {
+  background: #c82333 !important;
+}
+
+.empty {
+  text-align: center;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .canteen-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .canteen-header h1 {
+    font-size: 24px;
+  }
+
+  .canteen-card {
+    padding: 16px;
+  }
+
+  .canteen-form {
+    flex-direction: column;
+  }
+
+  .canteen-form select,
+  .canteen-form input,
+  .canteen-form button {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .canteen-table {
+    font-size: 13px;
+  }
+
+  .canteen-table th,
+  .canteen-table td {
+    padding: 8px 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .canteen-grid {
+    gap: 1rem;
+  }
+
+  .canteen-card {
+    padding: 12px;
+  }
+
+  .canteen-form button {
+    width: 100%;
+    align-self: stretch;
+  }
+
+  .canteen-table th {
+    font-size: 12px;
+  }
+
+  .canteen-table td {
+    font-size: 12px;
+    padding: 6px 0;
+  }
+
+  .canteen-table .delete-btn {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+}

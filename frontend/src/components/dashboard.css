@@ -1,0 +1,305 @@
+/* =========================================
+   GLOBAL
+========================================= */
+:root {
+  --primary: #ff7a18;
+  --primary-light: rgba(255, 122, 24, 0.1);
+  --text-dark: #1f2933;
+  --text-muted: #6b7280;
+  --card-bg: #fff;
+  --border-light: #e5e7eb;
+  --shadow-sm: 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
+  --radius: 16px;
+  --transition: 0.25s ease;
+}
+
+/* Layout */
+.page-container {
+  display: flex;
+  min-height: 100vh;
+  background: #f4f6fb;
+}
+
+.main-content {
+  flex: 1;
+  padding: 24px;
+  overflow-x: hidden;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+.page-header {
+  margin-bottom: 24px;
+}
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+.muted {
+  color: var(--text-muted);
+}
+
+/* =========================================
+   CARD / GRID
+========================================= */
+.grid {
+  display: grid;
+  gap: 20px;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* Stats */
+.stats {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.stat-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::after {
+  content: "";
+  position: absolute;
+  right: -30px;
+  top: -30px;
+  width: 110px;
+  height: 110px;
+  background: var(--primary-light);
+  border-radius: 50%;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+  margin-top: 8px;
+}
+
+/* =========================================
+   FILTERS
+========================================= */
+.filter-card {
+  margin-bottom: 24px;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.form-input,
+.date-block input[type="date"] {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-light);
+  font-size: 0.95rem;
+  transition: var(--transition);
+}
+
+.form-input:focus,
+.date-block input[type="date"]:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+/* =========================================
+   ORDERS TABLE
+========================================= */
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders-table th,
+.orders-table td {
+  padding: 14px 12px;
+  font-size: 0.92rem;
+}
+
+.orders-table th {
+  background: #f9fafb;
+  color: #374151;
+  font-weight: 600;
+}
+
+.orders-table tr {
+  transition: background 0.2s;
+}
+
+.orders-table tr:hover {
+  background: #f3f4f6;
+}
+
+.orders-table tr:not(:last-child) {
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* Status colors */
+.status.pending { color: #f59e0b; }
+.status.processing { color: #2563eb; }
+.status.completed { color: #16a34a; }
+.status.cancelled { color: #dc2626; }
+
+/* =========================================
+   ORDER DETAILS PAGE
+========================================= */
+.order-details-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.2fr);
+  gap: 24px;
+}
+
+.order-details-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 0.95rem;
+}
+
+.order-details-row .label {
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.order-qr-wrapper {
+  padding: 16px;
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Badges */
+.status-badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.status-badge.status-pending { background: #fef3c7; color: #d97706; }
+.status-badge.status-processing { background: #dbeafe; color: #2563eb; }
+.status-badge.status-completed { background: #d1fae5; color: #16a34a; }
+.status-badge.status-delivered { background: #ecfdf5; color: #059669; }
+.status-badge.status-cancelled { background: #fee2e2; color: #dc2626; }
+
+/* =========================================
+   MOBILE MENU BUTTON
+========================================= */
+.mobile-menu-btn {
+  display: none;
+  font-size: 1.6rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* =========================================
+   MODAL
+========================================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(3px);
+}
+
+.modal-content {
+  background: white;
+  padding: 24px;
+  border-radius: var(--radius);
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+
+.modal-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.btn-confirm,
+.btn-cancel {
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition);
+}
+
+.btn-confirm {
+  background: #16a34a;
+  color: #fff;
+}
+.btn-cancel {
+  background: #ef4444;
+  color: #fff;
+}
+
+.btn-confirm:hover,
+.btn-cancel:hover {
+  opacity: 0.85;
+}
+
+/* =========================================
+   RESPONSIVE IMPROVEMENTS
+========================================= */
+@media (max-width: 1024px) {
+  .page-header h1 { font-size: 1.8rem; }
+}
+
+@media (max-width: 768px) {
+  .main-content { padding: 16px; }
+
+  .mobile-menu-btn { display: block; }
+
+  .order-details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header h1 { font-size: 1.4rem; }
+
+  .orders-table th,
+  .orders-table td {
+    font-size: 0.8rem;
+    padding: 8px;
+  }
+}

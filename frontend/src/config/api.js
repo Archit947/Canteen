@@ -1,0 +1,3 @@
+// In production (Vercel), use relative paths so requests go to /api/...
+// In development, use localhost:5000
+export const API_URL = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000';

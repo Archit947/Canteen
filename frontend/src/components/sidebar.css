@@ -1,0 +1,158 @@
+/* ===== SIDEBAR BASE ===== */
+.sidebar {
+  width: 80px; /* enough space for icons */
+  min-height: 100vh;
+  background: linear-gradient(#f96604);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 10px;
+  position: sticky;
+  top: 0;
+  overflow: hidden;
+  transition: width 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ===== EXPAND ON HOVER (DESKTOP) ===== */
+.sidebar:hover {
+  width: 260px;
+  box-shadow: 6px 0 25px rgba(0, 0, 0, 0.25);
+}
+
+/* ===== MOBILE DRAWER OVERRIDE ===== */
+.sidebar.is-open {
+  width: 260px;
+}
+
+/* ===== OVERLAY ===== */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1100;
+}
+
+/* ===== BRAND ===== */
+.brand {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 28px;
+  margin-top: 10px;
+}
+
+.brand-image {
+  width: 190px;    /* much smaller logo */
+  height: 50px;   /* constrain height for a square logo */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+
+.brand-image img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Show logo only when expanded */
+.sidebar:hover .brand-image,
+.sidebar.is-open .brand-image {
+  opacity: 1;
+}
+
+/* ===== NAV ===== */
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ===== NAV ITEM ===== */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #000;
+  text-decoration: none;
+  background: transparent;
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+/* ===== ICON ===== */
+.nav-icon {
+  font-size: 1.2rem;
+  min-width: 36px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ===== LABEL ===== */
+.nav-label {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Show labels only when expanded */
+.sidebar:hover .nav-label,
+.sidebar.is-open .nav-label {
+  opacity: 1;
+}
+
+/* ===== HOVER ===== */
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  text-decoration: none;
+}
+
+/* ===== ACTIVE ===== */
+.nav-item.active {
+  background: #fff;
+  color: #f96604;
+}
+
+/* ===== LOGOUT ===== */
+.nav:last-child {
+  margin-top: auto;
+}
+
+.logout-btn {
+  background: rgba(239, 68, 68, 0.25);
+  color: #fff;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 260px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1200;
+  }
+
+  .sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .nav-label,
+  .brand-image {
+    opacity: 1;
+  }
+
+  .sidebar:hover {
+    width: 260px;
+    box-shadow: none;
+  }
+}
