@@ -51,11 +51,16 @@ function App() {
 
     fetch(url)
       .then(res => {
+        const contentType = res.headers.get("content-type");
         if (!res.ok) {
           if (res.status === 404) throw new Error('API endpoint not found. Please restart your backend server.');
           throw new Error(`HTTP error! Status: ${res.status}`);
         }
-        return res.json();
+        if (contentType && contentType.includes("application/json")) {
+          return res.json();
+        } else {
+          throw new Error("Backend API not reachable (received HTML instead of JSON). Check Vercel logs.");
+        }
       })
       .then(data => {
         if (Array.isArray(data)) {
