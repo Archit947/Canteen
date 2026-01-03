@@ -19,8 +19,8 @@ const Signup = () => {
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    fetch(`${API_URL}/api/branches`).then(res => res.json()).then(data => setBranches(Array.isArray(data) ? data : [])).catch(err => console.error(err));
-    fetch(`${API_URL}/api/canteens`).then(res => res.json()).then(data => setCanteens(Array.isArray(data) ? data : [])).catch(err => console.error(err));
+    fetch(`${API_URL}/branches`).then(res => res.headers.get('content-type')?.includes('application/json') ? res.json() : []).then(data => setBranches(Array.isArray(data) ? data : [])).catch(err => console.error(err));
+    fetch(`${API_URL}/canteens`).then(res => res.headers.get('content-type')?.includes('application/json') ? res.json() : []).then(data => setCanteens(Array.isArray(data) ? data : [])).catch(err => console.error(err));
   }, []);
 
   const handleChange = (e) => {
@@ -45,7 +45,7 @@ const Signup = () => {
     setError('');
     setSuccess('');
 
-    fetch(`${API_URL}/api/admins`, {
+    fetch(`${API_URL}/admins`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)

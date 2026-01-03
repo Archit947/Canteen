@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import AdminLayout from '../components/AdminLayout';
 import QRCode from 'react-qr-code';
-import { API_URL } from '../config/api';
 import '../components/dashboard.css';
+import { API_URL } from '../config/api';
 
 const OrderDetailsPage = ({ user }) => {
   const { orderId } = useParams();
@@ -16,11 +16,15 @@ const OrderDetailsPage = ({ user }) => {
     setLoading(true);
     setError(null);
 
-    fetch(`${API_URL}/api/canteen_orders/${encodeURIComponent(orderId)}`)
+    fetch(`${API_URL}/canteen_orders/${encodeURIComponent(orderId)}`)
       .then((res) => {
+        const contentType = res.headers.get("content-type");
         if (!res.ok) {
           if (res.status === 404) throw new Error('Order not found (or API missing - restart server)');
           throw new Error(`Failed to fetch order: ${res.status}`);
+        }
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Received HTML instead of JSON. Check backend URL.");
         }
         return res.json();
       })

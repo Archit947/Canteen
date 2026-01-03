@@ -23,9 +23,9 @@ const Adminmag = ({ user, onLogout }) => {
   );
 
   useEffect(() => {
-    fetch(`${API_URL}/api/admins`).then(res => res.json()).then(data => setAdmins(Array.isArray(data) ? data : [])).catch(err => console.error('Error fetching admins:', err));
-    fetch(`${API_URL}/api/branches`).then(res => res.json()).then(data => setBranches(Array.isArray(data) ? data : [])).catch(err => console.error('Error fetching branches:', err));
-    fetch(`${API_URL}/api/canteens`).then(res => res.json()).then(data => setCanteens(Array.isArray(data) ? data : [])).catch(err => console.error('Error fetching canteens:', err));
+    fetch(`${API_URL}/admins`).then(res => res.headers.get('content-type')?.includes('application/json') ? res.json() : []).then(data => setAdmins(Array.isArray(data) ? data : [])).catch(err => console.error('Error fetching admins:', err));
+    fetch(`${API_URL}/branches`).then(res => res.headers.get('content-type')?.includes('application/json') ? res.json() : []).then(data => setBranches(Array.isArray(data) ? data : [])).catch(err => console.error('Error fetching branches:', err));
+    fetch(`${API_URL}/canteens`).then(res => res.headers.get('content-type')?.includes('application/json') ? res.json() : []).then(data => setCanteens(Array.isArray(data) ? data : [])).catch(err => console.error('Error fetching canteens:', err));
   }, []);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const Adminmag = ({ user, onLogout }) => {
     
     const payload = { role, branch_id: role === 'branch_admin' ? branchId : null, canteen_id: role === 'canteen_admin' ? canteenId : null };
     
-    fetch(`${API_URL}/api/admins/${selectedId}`, {
+    fetch(`${API_URL}/admins/${selectedId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -70,7 +70,7 @@ const Adminmag = ({ user, onLogout }) => {
     if (Number(adminId) === user?.id) return setError('You cannot delete your own account');
     
     if (window.confirm('Are you sure you want to delete this admin?')) {
-      fetch(`${API_URL}/api/admins/${adminId}`, { method: 'DELETE' })
+      fetch(`${API_URL}/admins/${adminId}`, { method: 'DELETE' })
         .then(res => {
           if (!res.ok) throw new Error('Failed to delete admin');
           return res.json();

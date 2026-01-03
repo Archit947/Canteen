@@ -21,12 +21,12 @@ const Menus = ({ user }) => {
   // Fetch canteens for the dropdown selector
   useEffect(() => {
     if (user?.role === 'main_admin' || (user?.role === 'branch_admin' && user.branch_id)) {
-      let canteensUrl = `${API_URL}/api/canteens`;
+      let canteensUrl = `${API_URL}/canteens`;
       if (user.role === 'branch_admin') {
         canteensUrl += `?branch_id=${user.branch_id}`;
       }
       fetch(canteensUrl)
-        .then(res => res.json())
+        .then(res => res.headers.get('content-type')?.includes('application/json') ? res.json() : [])
         .then(data => setCanteens(Array.isArray(data) ? data : []))
         .catch(err => console.error('Error fetching canteens:', err));
     }
@@ -35,15 +35,15 @@ const Menus = ({ user }) => {
   // Fetch branches for main_admin filter
   useEffect(() => {
     if (user?.role === 'main_admin') {
-      fetch(`${API_URL}/api/branches`)
-        .then(res => res.json())
+      fetch(`${API_URL}/branches`)
+        .then(res => res.headers.get('content-type')?.includes('application/json') ? res.json() : [])
         .then(data => setBranches(Array.isArray(data) ? data : []))
         .catch(err => console.error('Error fetching branches:', err));
     }
   }, [user]);
 
   useEffect(() => {
-    let url = `${API_URL}/api/menus`;
+    let url = `${API_URL}/menus`;
     // Canteen admin sees only their menu
     if (user?.role === 'canteen_admin' && user.canteen_id) {
       url += `?canteen_id=${user.canteen_id}`;
@@ -58,7 +58,7 @@ const Menus = ({ user }) => {
     // Main admin sees all menus by default
 
     fetch(url)
-      .then(res => res.json())
+      .then(res => res.headers.get('content-type')?.includes('application/json') ? res.json() : [])
       .then(data => {
         if (Array.isArray(data)) {
           let filteredData = data;
@@ -118,7 +118,7 @@ const Menus = ({ user }) => {
     }
     
     if (editingId) {
-      fetch(`${API_URL}/api/menus/${editingId}`, {
+      fetch(`${API_URL}/menus/${editingId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -146,7 +146,7 @@ const Menus = ({ user }) => {
         setError(`Failed to update menu item: ${err.message}`);
       });
     } else {
-      fetch(`${API_URL}/api/menus`, {
+      fetch(`${API_URL}/menus`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -178,7 +178,7 @@ const Menus = ({ user }) => {
 
   const handleDelete = (id) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
-      fetch(`${API_URL}/api/menus/${id}`, {
+      fetch(`${API_URL}/menus/${id}`, {
         method: 'DELETE',
       })
         .then(res => {
@@ -221,115 +221,142 @@ const Menus = ({ user }) => {
   };
 
   return (
-    <div className="card menus-page-card">
-      <div className="card-header">
-        <h3>Menu Items</h3>
-        <div className="menus-filters">
+    <div className="menus-container">
+      {/* Left Sidebar: Filters and Form */}
+      <div className="menus-left-sidebar">
+        <div className="card">
+          <div className="card-header">
+            <h3>Filters & Options</h3>
+          </div>
+
+          {/* Branch and Canteen Selection */}
           {user?.role === 'main_admin' && (
-            <>
-              <select 
-                className="form-select" 
-                value={filterBranch}
-                onChange={(e) => {
-                  setFilterBranch(e.target.value);
-                  setFilterCanteen('');
+            <div className="menus-filters-section">
+              <div className="form-group">
+                <label className="form-label">Select Branch</label>
+                <select 
+                  className="form-select" 
+                  value={filterBranch}
+                  onChange={(e) => {
+                    setFilterBranch(e.target.value);
+                    setFilterCanteen('');
+                  }}
+                >
+                  <option value="">Select Branch</option>
+                  {branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Select Canteen</label>
+                <select 
+                  className="form-select" 
+                  value={filterCanteen}
+                  onChange={(e) => setFilterCanteen(e.target.value)}
+                >
+                  <option value="">Select Canteen</option>
+                  {canteens
+                    .filter(c => !filterBranch || Number(c.branch_id) === Number(filterBranch))
+                    .map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
+              </div>
+
+              <button 
+                className="btn btn-primary" 
+                onClick={() => {
+                  if (showForm) {
+                    resetForm();
+                  } else {
+                    setShowForm(true);
+                  }
                 }}
+                style={{ width: '100%' }}
               >
-                <option value="">Select Branch</option>
-                {branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-              </select>
-              <select 
-                className="form-select" 
-                value={filterCanteen}
-                onChange={(e) => setFilterCanteen(e.target.value)}
-              >
-                <option value="">Select Canteen</option>
-                {canteens
-                  .filter(c => !filterBranch || Number(c.branch_id) === Number(filterBranch))
-                  .map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
-            </>
+                {showForm ? 'Cancel' : 'Add Item'}
+              </button>
+            </div>
           )}
-          <button 
-            className="btn btn-primary" 
-            onClick={() => {
-              if (showForm) {
-                resetForm();
-              } else {
-                setShowForm(true);
-              }
-            }}
-          >
-            {showForm ? 'Cancel' : 'Add Item'}
-          </button>
+
+          {/* Add/Edit Form */}
+          {showForm && (
+            <div className="menu-form">
+              <h4 style={{ marginBottom: '1rem' }}>{editingId ? 'Edit Menu Item' : 'Add New Menu Item'}</h4>
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <label className="form-label">Item Name</label>
+                  <input className="form-input" name="name" value={formData.name} onChange={handleChange} required />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Price (e.g. ₹120)</label>
+                  <input className="form-input" name="price" value={formData.price} onChange={handleChange} required />
+                </div>
+                {(user?.role === 'main_admin' || user?.role === 'branch_admin') && (
+                  <div className="form-group">
+                    <label className="form-label">Canteen</label>
+                    <select className="form-select" name="canteen_id" value={formData.canteen_id} onChange={handleChange} required>
+                      <option value="">-- Select Canteen --</option>
+                      {canteens.map(c => (
+                        <option key={c.id} value={c.id}>{c.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+                <div className="form-group">
+                  <label className="form-label">Item Image</label>
+                  <input type="file" className="form-input" accept="image/*" onChange={handleFileChange} required={!formData.photo} />
+                  {formData.photo && (
+                    <div className="menu-form-preview">
+                      <img src={formData.photo} alt="Preview" />
+                    </div>
+                  )}
+                </div>
+                {error && <p className="text-danger">{error}</p>}
+                <div className="menu-form-actions">
+                  <button type="button" className="btn btn-secondary" onClick={resetForm} style={{ flex: 1 }}>Cancel</button>
+                  <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>{editingId ? 'Update' : 'Save'}</button>
+                </div>
+              </form>
+            </div>
+          )}
         </div>
       </div>
 
-      {showForm && (
-        <div className="menu-form">
-          <form onSubmit={handleSubmit}>
-            <div className="menu-form-grid">
-              <div className="form-group">
-                <label className="form-label">Item Name</label>
-                <input className="form-input" name="name" value={formData.name} onChange={handleChange} required />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Price (e.g. ₹120)</label>
-                <input className="form-input" name="price" value={formData.price} onChange={handleChange} required />
-              </div>
-              {(user?.role === 'main_admin' || user?.role === 'branch_admin') && (
-                <div className="form-group">
-                  <label className="form-label">Canteen</label>
-                  <select className="form-select" name="canteen_id" value={formData.canteen_id} onChange={handleChange} required>
-                    <option value="">-- Select Canteen --</option>
-                    {canteens.map(c => (
-                      <option key={c.id} value={c.id}>{c.name}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
-              <div className="form-group">
-                <label className="form-label">Item Image</label>
-                <input type="file" className="form-input" accept="image/*" onChange={handleFileChange} required={!formData.photo} />
-                {formData.photo && (
-                  <div className="menu-form-preview">
-                    <img src={formData.photo} alt="Preview" />
-                  </div>
-                )}
-              </div>
-            </div>
-            {error && <p className="text-danger">{error}</p>}
-            <div className="menu-form-actions">
-              <button type="button" className="btn btn-secondary" onClick={resetForm}>Cancel</button>
-              <button type="submit" className="btn btn-primary">{editingId ? 'Update Item' : 'Save Item'}</button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      <div className="menu-list">
-        {filteredMenuItems.map((item) => (
-          <div key={item.id} className="menu-item-card">
-            <div className="menu-item-image">
-              {item.photo ? (
-                <img src={item.photo} alt={item.name} />
-              ) : (
-                <span>No Image</span>
-              )}
-            </div>
-            <div className="menu-item-content">
-              <h4 className="menu-item-name">{item.name}</h4>
-              {user?.role === 'main_admin' && canteens.find(c => c.id === item.canteen_id) && (
-                <p className="menu-item-canteen">{canteens.find(c => c.id === item.canteen_id).name}</p>
-              )}
-              <p className="menu-item-price">{formatRupee(item.price)}</p>
-              <div className="menu-item-actions">
-                <button className="btn btn-secondary" onClick={() => handleEditClick(item)}>Edit</button>
-                <button className="btn btn-danger" onClick={() => handleDelete(item.id)}>Delete</button>
-              </div>
-            </div>
+      {/* Right Content: Menu Items */}
+      <div className="menus-right-content">
+        <div className="card menus-page-card">
+          <div className="card-header">
+            <h3>Menu Items</h3>
           </div>
-        ))}
+
+          <div className="menu-list">
+            {filteredMenuItems.length === 0 ? (
+              <p className="empty-state">No menu items found. {user?.role === 'main_admin' && 'Select a branch and canteen to view items.'}</p>
+            ) : (
+              filteredMenuItems.map((item) => (
+                <div key={item.id} className="menu-item-card">
+                  <div className="menu-item-image">
+                    {item.photo ? (
+                      <img src={item.photo} alt={item.name} />
+                    ) : (
+                      <span>No Image</span>
+                    )}
+                  </div>
+                  <div className="menu-item-content">
+                    <h4 className="menu-item-name">{item.name}</h4>
+                    {user?.role === 'main_admin' && canteens.find(c => c.id === item.canteen_id) && (
+                      <p className="menu-item-canteen">{canteens.find(c => c.id === item.canteen_id).name}</p>
+                    )}
+                    <p className="menu-item-price">{formatRupee(item.price)}</p>
+                    <div className="menu-item-actions">
+                      <button className="btn btn-secondary" onClick={() => handleEditClick(item)}>Edit</button>
+                      <button className="menu-btn-danger" onClick={() => handleDelete(item.id)}>Delete</button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

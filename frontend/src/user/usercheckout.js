@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import QRCode from 'react-qr-code';
-import { API_URL } from '../config/api';
 import './user.css';
+import { API_URL } from '../config/api';
 
 const UserCheckout = ({ onPlaceOrder }) => {
   const location = useLocation();
@@ -29,9 +29,9 @@ const UserCheckout = ({ onPlaceOrder }) => {
     }
 
     const orderId = '#' + Math.floor(1000 + Math.random() * 9000);
-    // When running on localhost, use your computer's IP address so the QR code works on mobile.
-    // For local testing, window.location.origin is sufficient.
-    const baseUrl = window.location.origin;
+    // Try to get the IP-based URL from sessionStorage (set by QR page for network access)
+    // Otherwise, fall back to window.location.origin (localhost)
+    const baseUrl = sessionStorage.getItem('qrBaseUrl') || window.location.origin;
     const qrPayload = `${baseUrl}/orderdetails?id=${encodeURIComponent(orderId)}`;
     const newOrder = { order_id: orderId, item_names: cart.map(i => i.name).join(', '), branch_name: branchName, canteen_name: canteenName, employee_name: userDetails.name, total_amount: '₹' + totalAmount, status: 'Pending', qr_code: qrPayload };
 
@@ -40,8 +40,15 @@ const UserCheckout = ({ onPlaceOrder }) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newOrder)
     })
-    .then(res => {
-      if (!res.ok) throw new Error('Failed to save order');
+    .then(async res => {
+      const contentType = res.headers.get("content-type");
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || 'Failed to save order');
+      }
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("Received HTML instead of JSON. Check backend URL.");
+      }
       return res.json();
     })
     .then(saved => {

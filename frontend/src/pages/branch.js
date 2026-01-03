@@ -2,6 +2,7 @@ import Sidebar from '../components/sidebar';
 import { useState, useEffect } from 'react';
 import '../components/dashboard.css';
 import '../components/branch.css';
+import { API_URL } from '../config/api';
 
 const BranchPage = ({ onLogout }) => {
   const [branches, setBranches] = useState([]);
@@ -10,7 +11,7 @@ const BranchPage = ({ onLogout }) => {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/branches')
+    fetch(`${API_URL}/branches`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -28,7 +29,7 @@ const BranchPage = ({ onLogout }) => {
 
   const handleAddBranch = () => {
     if (branchInput.trim() !== '') {
-      fetch('http://localhost:5000/api/branches', {
+      fetch(`${API_URL}/branches`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: branchInput.trim() })
@@ -51,7 +52,7 @@ const BranchPage = ({ onLogout }) => {
 
   const handleDeleteBranch = (id) => {
     if (window.confirm("Are you sure you want to delete this branch?")) {
-      fetch(`http://localhost:5000/api/branches/${id}`, {
+      fetch(`${API_URL}/branches/${id}`, {
         method: 'DELETE'
       })
       .then(res => {

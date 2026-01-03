@@ -124,7 +124,7 @@ const OrderTable = ({ orders: initialOrders = [], onOrderUpdate }) => {
     // The order ID may contain special characters like '#' which must be encoded.
     const encodedOrderId = encodeURIComponent(orderId);
 
-    const url = `${API_URL}/api/canteen_orders/${encodedOrderId}`;
+    const url = `${API_URL}/canteen_orders/${encodedOrderId}`;
     console.log("Sending PUT request to:", url);
 
     fetch(url, {
@@ -133,13 +133,16 @@ const OrderTable = ({ orders: initialOrders = [], onOrderUpdate }) => {
       body: JSON.stringify({ status: newStatus })
     })
       .then(async (res) => {
+        const contentType = res.headers.get('content-type');
         if (!res.ok) {
-          const contentType = res.headers.get('content-type');
           if (contentType && contentType.includes('application/json')) {
             const errJson = await res.json();
             throw new Error(errJson.message || errJson.sqlMessage || `Server error: ${res.status}`);
           }
           throw new Error(`Server error: ${res.status}`);
+        }
+        if (!contentType || !contentType.includes('application/json')) {
+          throw new Error("Received HTML instead of JSON. Check backend URL.");
         }
         return res.json();
       })

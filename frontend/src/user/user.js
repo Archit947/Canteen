@@ -12,8 +12,23 @@ const UserOrder = () => {
   const [selectedCanteenId, setSelectedCanteenId] = useState('');
 
   useEffect(() => {
-    fetch(`${API_URL}/api/branches`).then(res => res.json()).then(data => setAllBranches(Array.isArray(data) ? data : []));
-    fetch(`${API_URL}/api/canteens`).then(res => res.json()).then(data => setAllCanteens(Array.isArray(data) ? data : []));
+    const fetchData = async (url, setter) => {
+      try {
+        const res = await fetch(url);
+        const contentType = res.headers.get("content-type");
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Received HTML instead of JSON. Check API URL.");
+        }
+        const data = await res.json();
+        setter(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error(`Error fetching ${url}:`, error);
+      }
+    };
+
+    fetchData(`${API_URL}/api/branches`, setAllBranches);
+    fetchData(`${API_URL}/api/canteens`, setAllCanteens);
   }, []);
 
   const availableCanteens = selectedBranchId ? allCanteens.filter(c => c.branch_id === Number(selectedBranchId)) : [];

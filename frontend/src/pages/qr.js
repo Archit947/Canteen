@@ -16,8 +16,8 @@ const QRPage = ({ user }) => {
     const fetchData = async () => {
       try {
         const [branchesRes, canteensRes] = await Promise.all([
-          fetch(`${API_URL}/api/branches`),
-          fetch(`${API_URL}/api/canteens`)
+          fetch(`${API_URL}/branches`),
+          fetch(`${API_URL}/canteens`)
         ]);
         const branchesData = await branchesRes.json();
         const canteensData = await canteensRes.json();
@@ -34,12 +34,11 @@ const QRPage = ({ user }) => {
   }, []);
 
   useEffect(() => {
-    if (user?.role === 'branch_admin') {
-      setSelectedBranch(user.branch_id);
-    } else if (user?.role === 'canteen_admin') {
-      setSelectedCanteen(user.canteen_id);
+    if (baseUrl) {
+      // Save the base URL to sessionStorage so checkout page can use it
+      sessionStorage.setItem('qrBaseUrl', baseUrl);
     }
-  }, [user]);
+  }, [baseUrl]);
 
   // Generate the URL that the user will visit to order
   const generateQRUrl = (canteenId) => {

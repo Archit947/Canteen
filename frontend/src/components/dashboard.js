@@ -24,8 +24,14 @@ const DashboardContent = ({ orders = [], stats, user, onOrderUpdate }) => {
   }, [user]);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/branches`)
-      .then(res => res.json())
+    fetch(`${API_URL}/branches`)
+      .then(res => {
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          return res.json();
+        }
+        throw new Error("Received HTML instead of JSON");
+      })
       .then(data => {
         if (Array.isArray(data)) {
           setBranches(data);
@@ -39,8 +45,14 @@ const DashboardContent = ({ orders = [], stats, user, onOrderUpdate }) => {
         setBranches([]); // Ensure branches is an array even on fetch error
       });
 
-    fetch(`${API_URL}/api/canteens`)
-      .then(res => res.json())
+    fetch(`${API_URL}/canteens`)
+      .then(res => {
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          return res.json();
+        }
+        throw new Error("Received HTML instead of JSON");
+      })
       .then(data => {
         if (Array.isArray(data)) {
           setCanteens(data);

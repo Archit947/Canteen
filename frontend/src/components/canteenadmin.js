@@ -3,6 +3,7 @@ import Sidebar from './sidebar';
 import './dashboard.css';
 import './canteen.css';
 import './branch.css';
+import { API_URL } from '../config/api';
 
 // Canteen admin can only view the single canteen assigned via user.canteen_id
 const CanteenAdmin = ({ user }) => {
@@ -15,8 +16,8 @@ const CanteenAdmin = ({ user }) => {
     const fetchData = async () => {
       try {
         const [branchRes, canteenRes] = await Promise.all([
-          fetch('http://localhost:5000/api/branches'),
-          fetch('http://localhost:5000/api/canteens')
+          fetch(`${API_URL}/branches`),
+          fetch(`${API_URL}/canteens`)
         ]);
 
         const branchesJson = await branchRes.json();

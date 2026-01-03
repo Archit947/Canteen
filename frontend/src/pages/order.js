@@ -13,13 +13,13 @@ const OrderPage = ({ user }) => {
   const [selectedDate, setSelectedDate] = useState('');
 
   useEffect(() => {
-    fetch(`${API_URL}/api/branches`)
-      .then(res => res.json())
+    fetch(`${API_URL}/branches`)
+      .then(res => res.headers.get('content-type')?.includes('application/json') ? res.json() : [])
       .then(data => setBranches(Array.isArray(data) ? data : []))
       .catch(err => console.error(err));
 
-    fetch(`${API_URL}/api/canteens`)
-      .then(res => res.json())
+    fetch(`${API_URL}/canteens`)
+      .then(res => res.headers.get('content-type')?.includes('application/json') ? res.json() : [])
       .then(data => setCanteens(Array.isArray(data) ? data : []))
       .catch(err => console.error(err));
   }, []);
@@ -32,7 +32,7 @@ const OrderPage = ({ user }) => {
   }, [user]);
 
   useEffect(() => {
-    let url = `${API_URL}/api/canteen_orders`;
+    let url = `${API_URL}/canteen_orders`;
     if (user) {
       if (user.role === 'branch_admin') url += `?branch_id=${user.branch_id}`;
       if (user.role === 'canteen_admin') url += `?canteen_id=${user.canteen_id}`;
@@ -43,6 +43,9 @@ const OrderPage = ({ user }) => {
         if (!res.ok) {
           if (res.status === 404) throw new Error('API endpoint not found. Please restart your backend server.');
           throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        if (!res.headers.get('content-type')?.includes('application/json')) {
+          throw new Error('Received HTML instead of JSON. Check backend URL.');
         }
         return res.json();
       })

@@ -9,8 +9,8 @@ const BranchAdmin = ({ user }) => {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    fetch(`${API_URL}/api/branches`)
-      .then(res => res.json())
+    fetch(`${API_URL}/branches`)
+      .then(res => res.headers.get('content-type')?.includes('application/json') ? res.json() : [])
       .then(data => {
         if (Array.isArray(data)) {
           setBranches(data);
@@ -27,7 +27,7 @@ const BranchAdmin = ({ user }) => {
   const handleAddBranch = (e) => {
     e.preventDefault();
     if (branchInput.trim() !== '') {
-      fetch(`${API_URL}/api/branches`, {
+      fetch(`${API_URL}/branches`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: branchInput.trim() })
@@ -50,7 +50,7 @@ const BranchAdmin = ({ user }) => {
   const handleDeleteBranch = (id) => {
     if (!window.confirm("Are you sure you want to delete this branch?")) return;
 
-    fetch(`${API_URL}/api/branches/${id}`, {
+    fetch(`${API_URL}/branches/${id}`, {
       method: 'DELETE'
     })
     .then(res => {

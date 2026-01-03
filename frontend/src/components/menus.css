@@ -1,8 +1,40 @@
-/* Menus Page Specific Styles
+/* Menus Page Side-by-Side Layout */
+.menus-container {
+  display: flex;
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-6);
+}
+
+.menus-left-sidebar {
+  flex: 0 0 320px;
+  min-height: 100vh;
+}
+
+.menus-right-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.menus-filters-section {
+  padding: var(--spacing-5);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.menus-filters-section .form-group {
+  margin-bottom: var(--spacing-4);
+}
+
+.menus-filters-section .form-group:last-child {
+  margin-bottom: 0;
+}
+
+.menus-filters-section button {
+  margin-top: var(--spacing-4);
+}
 
 .menus-page-card {
   overflow: visible; /* Allow dropdowns from filters to show */
-
+}
 
 .menus-filters {
   display: flex;
@@ -26,7 +58,7 @@
 
 .menu-form-preview img {
   width:100px;
-  height: 1px;
+  height: 100px;
   object-fit: cover;
   border-radius: var(--border-radius-md);
   margin-top: var(--spacing-2);
@@ -45,6 +77,15 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--spacing-5);
   margin-top: var(--spacing-5);
+  padding: var(--spacing-5);
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--spacing-6);
+  color: var(--text-secondary-light);
+  font-size: 0.95rem;
 }
 
 .menu-item-card {
@@ -112,6 +153,7 @@
   padding-top: var(--spacing-2);
   font-size: 0.85rem;
 }
+
 .menu-item-actions button,
 .menu-item-actions .button {
   padding: 0.25em 0.7em;
@@ -119,5 +161,33 @@
   border-radius: 4px;
   min-width: 0;
   height: 1.6em;
-  
+}
+.menu-btn-danger{
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 10px;
+  text-align: center;
+}
+.menu-btn-danger:hover {
+    transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+} 
+/* Responsive: Stack on smaller screens */
+@media (max-width: 1024px) {
+  .menus-container {
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+
+  .menus-left-sidebar {
+    flex: 1;
+    min-height: auto;
+  }
+
+  .menus-right-content {
+    flex: 1;
+  }
 } 

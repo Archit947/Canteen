@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../components/AdminLayout";
 import "../components/canteen.css";
-import { API_URL } from '../config/api';
+import { API_URL } from "../config/api";
 
 function CanteenQR({ canteenId }) {
   const [qr, setQr] = useState('');
   const [menuUrl, setMenuUrl] = useState('');
 
   useEffect(() => {
-    fetch(`${API_URL}/api/qr/canteen/${canteenId}`)
+    fetch(`${API_URL}/qr/canteen/${canteenId}`)
       .then(res => res.json())
       .then(data => {
         setQr(data.qr);
@@ -55,20 +55,22 @@ const CanteenPage = ({ user }) => {
   }, [user]);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/branches`)
-      .then(res => res.json())
-      .then(setBranches);
+    fetch(`${API_URL}/branches`)
+      .then(res => res.headers.get('content-type')?.includes('application/json') ? res.json() : [])
+      .then(setBranches)
+      .catch(err => console.error("Error fetching branches:", err));
 
-    fetch(`${API_URL}/api/canteens`)
-      .then(res => res.json())
-      .then(setCanteens);
+    fetch(`${API_URL}/canteens`)
+      .then(res => res.headers.get('content-type')?.includes('application/json') ? res.json() : [])
+      .then(setCanteens)
+      .catch(err => console.error("Error fetching canteens:", err));
   }, []);
 
   const addCanteen = (e) => {
     e.preventDefault();
     if (!selectedBranch || !canteenName) return;
 
-    fetch(`${API_URL}/api/canteens`, {
+    fetch(`${API_URL}/canteens`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -87,7 +89,7 @@ const CanteenPage = ({ user }) => {
   const deleteCanteen = (canteenId) => {
     if (!window.confirm("Are you sure you want to delete this canteen?")) return;
 
-    fetch(`${API_URL}/api/canteens/${canteenId}`, {
+    fetch(`${API_URL}/canteens/${canteenId}`, {
       method: "DELETE"
     })
       .then(res => {

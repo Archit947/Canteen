@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../components/dashboard.css';
+import { API_URL } from '../config/api';
 
 const Login = ({ onLogin }) => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ const Login = ({ onLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch('http://localhost:5000/api/login', {
+    fetch(`${API_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })

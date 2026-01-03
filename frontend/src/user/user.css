@@ -66,10 +66,13 @@
 .btn-secondary {
   background: #222;
   color: #fff;
+  max-height: 65px;
+  margin-top: 10px;
 }
 
 .btn-secondary:hover {
-  background: #444;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255, 122, 24, 0.5);
 }
 
 /* ===== FORM ===== */
@@ -88,7 +91,7 @@
   width: 100%;
   padding: 12px;
   border-radius: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #000000;
   font-size: 1rem;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }

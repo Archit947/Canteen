@@ -40,7 +40,7 @@ const UserMenu = () => {
     }
 
     // Fetch menu for the canteen
-    fetch(`${API_URL}/api/menus?canteen_id=${finalCanteenId}`)
+    fetch(`${API_URL}/menus?canteen_id=${finalCanteenId}`)
       .then(res => res.json())
       .then(data => setMenuItems(Array.isArray(data) ? data : []))
       .catch(() => setError('Failed to load menu'))
@@ -48,22 +48,29 @@ const UserMenu = () => {
 
     // If names are not available from state (e.g. from QR link), fetch them
     if (!canteenName) {
-      fetch(`${API_URL}/api/canteens`)
-        .then(res => res.json())
-        .then(allCanteens => {
+      const fetchDetails = async () => {
+        try {
+          const resCanteens = await fetch(`${API_URL}/canteens`);
+          if (!resCanteens.ok) throw new Error('Failed to fetch canteens');
+          const allCanteens = await resCanteens.json();
+
           const currentCanteen = allCanteens.find(c => String(c.id) === String(finalCanteenId));
           if (currentCanteen) {
-            fetch(`${API_URL}/api/branches`)
-              .then(res => res.json())
-              .then(allBranches => {
-                const currentBranch = allBranches.find(b => String(b.id) === String(currentCanteen.branch_id));
-                setCanteenDetails({
-                  name: currentCanteen.name,
-                  branchName: currentBranch ? currentBranch.name : '',
-                });
-              });
+            const resBranches = await fetch(`${API_URL}/branches`);
+            if (!resBranches.ok) throw new Error('Failed to fetch branches');
+            const allBranches = await resBranches.json();
+
+            const currentBranch = allBranches.find(b => String(b.id) === String(currentCanteen.branch_id));
+            setCanteenDetails({
+              name: currentCanteen.name,
+              branchName: currentBranch ? currentBranch.name : '',
+            });
           }
-        });
+        } catch (err) {
+          console.error("Error loading details:", err);
+        }
+      };
+      fetchDetails();
     }
   }, [finalCanteenId, canteenName]);
 

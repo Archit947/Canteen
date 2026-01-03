@@ -43,7 +43,7 @@ function App() {
 
   useEffect(() => {
     // Only fetch orders if user is logged in (or for public view if needed, but here we filter for admin)
-    let url = `${API_URL}/api/canteen_orders`;
+    let url = `${API_URL}/canteen_orders`;
     if (user) {
       if (user.role === 'branch_admin') url += `?branch_id=${user.branch_id}`;
       if (user.role === 'canteen_admin') url += `?canteen_id=${user.canteen_id}`;

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from './sidebar';
 import './dashboard.css';
 import './branch.css';
+import { API_URL } from '../config/api';
 
 const BranchAdmin = ({ user }) => {
   const [branches, setBranches] = useState([]);
@@ -10,7 +11,7 @@ const BranchAdmin = ({ user }) => {
   const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/branches')
+    fetch(`${API_URL}/branches`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -32,7 +33,7 @@ const BranchAdmin = ({ user }) => {
       return;
     }
 
-    fetch('http://localhost:5000/api/branches', {
+    fetch(`${API_URL}/branches`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name })
