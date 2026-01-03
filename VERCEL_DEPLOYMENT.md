@@ -5,29 +5,27 @@ This guide will help you deploy your Admin Dashboard application to Vercel.
 ## Prerequisites
 
 1. A Vercel account (sign up at https://vercel.com)
-2. A cloud MySQL database (recommended options):
-   - **PlanetScale** (free tier available): https://planetscale.com
+2. A cloud database (recommended options):
+   - **Supabase** (PostgreSQL) - **Currently Configured**: https://supabase.com (free tier available)
+   - **PlanetScale** (MySQL): https://planetscale.com
    - **AWS RDS**: https://aws.amazon.com/rds
    - **Railway**: https://railway.app
-   - **Supabase** (PostgreSQL): https://supabase.com (requires code changes)
-   - Any other cloud MySQL provider
+   
+   **Note**: This project is configured for Supabase (PostgreSQL). See `SUPABASE_SETUP.md` for setup instructions.
 
 3. Git repository (GitHub, GitLab, or Bitbucket)
 
-## Step 1: Set Up Cloud Database
+## Step 1: Set Up Supabase Database
 
-1. Create a MySQL database on your chosen provider
-2. Note down the following details:
-   - Host
-   - Port (usually 3306)
-   - Database name
-   - Username
-   - Password
-   - SSL requirement (usually required for cloud databases)
+**This project is configured for Supabase (PostgreSQL).**
 
-3. Import your database schema:
-   - Find your schema file at `frontend/src/schema.sql`
-   - Import it to your cloud database using a MySQL client or the provider's interface
+1. Follow the detailed instructions in `SUPABASE_SETUP.md`
+2. Create a Supabase account and project at https://supabase.com
+3. Get your database connection details (connection string or individual parameters)
+4. Import your database schema:
+   - Go to Supabase SQL Editor
+   - Copy the schema from `frontend/src/schema.sql`
+   - Run it in the SQL Editor
 
 ## Step 2: Prepare Your Code
 
@@ -122,12 +120,20 @@ npm run build
 
 6. Add Environment Variables:
    Click **"Environment Variables"** and add:
-   - `DB_HOST` - Your database host
-   - `DB_USER` - Your database username
-   - `DB_PASSWORD` - Your database password
-   - `DB_NAME` - Your database name
-   - `DB_PORT` - Usually `3306`
-   - `DB_SSL` - Set to `true` for cloud databases
+   
+   **Option A: Using Connection String (Recommended)**
+   - `DATABASE_URL` - Your Supabase connection string (from Settings → Database)
+   - `DB_SSL` - Set to `true`
+   
+   **Option B: Using Individual Parameters**
+   - `DB_HOST` - Your Supabase database host (e.g., db.xxxxx.supabase.co)
+   - `DB_USER` - `postgres`
+   - `DB_PASSWORD` - Your Supabase database password
+   - `DB_NAME` - `postgres`
+   - `DB_PORT` - `5432`
+   - `DB_SSL` - `true`
+   
+   See `SUPABASE_SETUP.md` for detailed instructions on getting these values.
 
 7. Click **"Deploy"**
 
@@ -187,17 +193,22 @@ If you encounter routing issues, you may need to update `vercel.json`. The curre
 ### Database Connection Issues
 
 1. **Error: Connection refused**
-   - Verify your database host and port are correct
-   - Ensure your database allows connections from Vercel's IP addresses
-   - Check firewall settings
+   - Verify your Supabase connection string is correct
+   - Check that your Supabase project is active
+   - Ensure you're using the correct port (5432 for PostgreSQL)
 
 2. **Error: SSL required**
-   - Set `DB_SSL=true` in environment variables
-   - Some databases require SSL certificates
+   - Set `DB_SSL=true` in environment variables (or use DATABASE_URL which includes SSL)
+   - Supabase requires SSL connections
 
-3. **Error: Access denied**
-   - Verify username and password are correct
-   - Check database user permissions
+3. **Error: Access denied / Authentication failed**
+   - Verify your password is correct (Supabase database password, not your account password)
+   - If using connection string, ensure password is properly URL-encoded
+   - Try using individual parameters instead of connection string
+
+4. **Error: Relation/Table does not exist**
+   - Make sure you've imported the schema.sql in Supabase SQL Editor
+   - Check that tables were created (go to Table Editor in Supabase dashboard)
 
 ### API Routes Not Working
 
@@ -213,7 +224,7 @@ If you encounter routing issues, you may need to update `vercel.json`. The curre
 
 ### Build Errors
 
-1. Check Node.js version compatibility (Vercel uses Node 18.x by default)
+1. Check Node.js version compatibility (Vercel requires Node 20.x or newer, e.g. 24.x)
 2. Ensure all dependencies are listed in `package.json`
 3. Check build logs in Vercel dashboard for specific errors
 
@@ -236,4 +247,3 @@ If you encounter issues:
 2. Review serverless function logs in Vercel dashboard
 3. Check database connection and credentials
 4. Verify all environment variables are set correctly
-
